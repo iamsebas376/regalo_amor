@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Para ti, mi amor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Paleta pastel (texto ciruela oscuro para contraste >= 4.5:1) */
+    --bg:#FDF2F8;
+    --ink:#4A2545;
+    --ink-soft:#7A4E72;
+    --card:#FFF9FC;
+    --pink:#F9C6DE;
+    --pink-strong:#F49CC4;
+    --lavender:#DCD3FF;
+    --mint:#C7F0D8;
+    --peach:#FFD9BF;
+    --butter:#FFF1B8;
+    --sky:#CDE7FF;
+    --wrong:#FFC9C9;
+    --ring:#8B3A7E;
+
+    --radius-lg:32px;
+    --radius-md:22px;
+    --radius-pill:999px;
+
+    --clay:
+      8px 10px 20px rgba(186,120,160,.22),
+      inset 2px 2px 4px rgba(255,255,255,.5),
+      inset -4px -5px 10px rgba(190,120,165,.16);
+    --clay-press:
+      3px 4px 8px rgba(186,120,160,.22),
+      inset 4px 4px 8px rgba(190,120,165,.22),
+      inset -3px -3px 6px rgba(255,255,255,.7);
+
+    --ease-out:cubic-bezier(.22,1,.36,1);
+    --spring:cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;min-height:100vh;
+    background:linear-gradient(180deg,#FDF2F8 0%,#F6F0FF 100%) fixed var(--bg);
+    color:var(--ink);
+    font-family:"Nunito",system-ui,sans-serif;
+    font-size:17px;line-height:1.55;
+    overflow-x:hidden;
+    -webkit-tap-highlight-color:transparent;
+  }
+  h1,h2,h3{font-family:"Fredoka",sans-serif;line-height:1.15;margin:0 0 .4em;text-wrap:balance}
+  .hand{font-family:"Caveat",cursive}
+
+  .wrap{width:100%;max-width:560px;margin:0 auto;padding:24px 16px 64px}
+
+  .clay{
+    background:var(--card);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--clay);
+    border:3px solid rgba(255,255,255,.7);
+  }
+
+  .btn{
+    font:600 1.05rem/1 "Fredoka",sans-serif;
+    color:var(--ink);
+    background:var(--pink);
+    border:3px solid rgba(255,255,255,.75);
+    border-radius:var(--radius-pill);
+    padding:16px 28px;min-height:52px;
+    box-shadow:var(--clay);
+    cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    transition:transform .2s var(--ease-out),box-shadow .2s var(--ease-out),background-color .2s;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(1px) scale(.98);box-shadow:var(--clay-press)}
+  .btn svg{width:20px;height:20px;fill:currentColor}
+  .btn.alt{background:var(--lavender)}
+  :focus-visible{outline:3px solid var(--ring);outline-offset:4px;border-radius:12px}
+
+  /* Pantallas */
+  .screen{min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .screen[hidden]{display:none}
+  .fade-in{animation:fadeIn .6s var(--ease-out) both}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+
+  /* Intro */
+  .intro{padding:40px 28px;text-align:center}
+  .badge-heart{
+    width:96px;height:96px;margin:0 auto 20px;border-radius:50%;
+    background:var(--pink);display:grid;place-items:center;box-shadow:var(--clay);
+    animation:beat 1.6s ease-in-out infinite;
+  }
+  .badge-heart svg{width:48px;height:48px;fill:#E86AA6}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.1)}30%{transform:scale(1)}45%{transform:scale(1.06)}}
+  .intro h1{font-size:clamp(1.9rem,6vw,2.4rem)}
+  .intro p{color:var(--ink-soft);margin:0 0 28px}
+  .intro .hand{font-size:1.6rem;color:var(--ink);display:block;margin-bottom:8px}
+
+  /* Quiz */
+  .quiz{padding:28px 22px 30px}
+  .quiz-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-weight:700;color:var(--ink-soft);font-size:.95rem}
+  .lives{display:flex;gap:4px}
+  .lives svg{width:20px;height:20px;fill:#E86AA6;transition:opacity .3s,transform .3s}
+  .progress{height:16px;border-radius:var(--radius-pill);background:#F6E3EE;box-shadow:inset 3px 3px 6px rgba(190,120,165,.25),inset -3px -3px 6px rgba(255,255,255,.9);overflow:hidden;margin-bottom:24px}
+  .progress span{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--pink-strong),#C9A7FF);transition:width .6s var(--ease-out)}
+  .question{font-size:clamp(1.35rem,5vw,1.6rem);margin-bottom:20px}
+  .options{display:grid;gap:14px}
+  .opt{
+    text-align:left;width:100%;
+    font:600 1.02rem/1.35 "Nunito",sans-serif;color:var(--ink);
+    background:var(--card);
+    border:3px solid rgba(255,255,255,.8);
+    border-radius:var(--radius-md);
+    padding:16px 18px;min-height:56px;
+    box-shadow:var(--clay);cursor:pointer;
+    display:flex;align-items:center;gap:14px;
+    transition:transform .2s var(--ease-out),box-shadow .2s,background-color .25s;
+  }
+  .opt .opt-key{
+    flex:none;width:34px;height:34px;border-radius:50%;
+    display:grid;place-items:center;font-family:"Fredoka";font-weight:600;
+    background:var(--lavender);box-shadow:inset 2px 2px 4px rgba(255,255,255,.8),inset -2px -2px 4px rgba(150,120,200,.25);
+  }
+  .opt:nth-child(2) .opt-key{background:var(--peach)}
+  .opt:nth-child(3) .opt-key{background:var(--mint)}
+  .opt:nth-child(4) .opt-key{background:var(--sky)}
+  .opt:hover{transform:translateY(-2px)}
+  .opt:active{box-shadow:var(--clay-press);transform:scale(.99)}
+  .opt.correct{background:var(--mint);transform:scale(1.02)}
+  .opt.wrong{background:var(--wrong);animation:shake .45s}
+  .opt:disabled{cursor:default}
+  @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+  .feedback{min-height:1.6em;margin:18px 0 0;text-align:center;font-family:"Caveat";font-size:1.55rem;font-weight:700}
+
+  /* Desbloqueo */
+  .unlock{padding:40px 28px;text-align:center}
+  .unlock h2{font-size:2rem}
+
+  /* Secciones del regalo */
+  .section{margin-top:56px;text-align:center}
+  .section:first-child{margin-top:12px}
+  .eyebrow{display:inline-block;padding:6px 16px;border-radius:var(--radius-pill);background:var(--lavender);font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;box-shadow:var(--clay);margin-bottom:14px}
+  .section h2{font-size:clamp(1.7rem,6vw,2.2rem)}
+  .section .sub{color:var(--ink-soft);margin:0 auto 22px;max-width:40ch}
+
+  /* Ramo */
+  .bouquet-card{padding:18px 12px 24px;position:relative}
+  .bouquet{width:100%;max-width:400px;height:auto;display:block;margin:0 auto;overflow:visible}
+  .bouquet .bloom{transform-origin:0 0;transform:scale(.22) rotate(-40deg);transition:transform 1s var(--spring)}
+  .bouquet.open .bloom{transform:scale(1) rotate(0)}
+  .bouquet .flower{cursor:pointer;outline:none}
+  .bouquet .flower:focus-visible .ring{opacity:1}
+  .bouquet .ring{opacity:0;fill:none;stroke:var(--ring);stroke-width:3;stroke-dasharray:6 5}
+  .bouquet .flower.seen .center{fill:#FFD27A}
+  .bouquet .sway{animation:sway 5s ease-in-out infinite alternate;transform-origin:200px 420px;transform-box:view-box}
+  @keyframes sway{from{transform:rotate(-1.5deg)}to{transform:rotate(1.5deg)}}
+  .note{
+    margin:18px auto 0;max-width:420px;padding:18px 20px;
+    background:var(--butter);border-radius:var(--radius-md);box-shadow:var(--clay);
+    font-family:"Caveat";font-size:1.6rem;line-height:1.25;min-height:84px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .note.pop{animation:pop .45s var(--spring)}
+  @keyframes pop{from{transform:scale(.9);opacity:.4}to{transform:scale(1);opacity:1}}
+  .counter-pill{display:inline-block;margin-top:14px;font-weight:700;color:var(--ink-soft);font-size:.95rem}
+  .petal{position:fixed;top:-20px;pointer-events:none;z-index:50;width:16px;height:16px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--r));opacity:.2}}
+
+  /* Polaroid */
+  .polaroid-btn{background:none;border:0;padding:0;cursor:pointer;display:block;margin:40px auto 0;border-radius:6px}
+  .polaroid{
+    position:relative;width:min(300px,82vw);
+    background:#FFFDF8;padding:16px 16px 70px;border-radius:6px;
+    box-shadow:0 18px 40px rgba(120,70,110,.25),0 3px 8px rgba(120,70,110,.15);
+    transform:rotate(-4deg);
+    transition:transform .5s var(--spring),box-shadow .5s;
+  }
+  .polaroid-btn:hover .polaroid{transform:rotate(-2deg) translateY(-4px)}
+
+  /* Foto a pantalla completa */
+  .lightbox{position:fixed;inset:0;z-index:100;background:rgba(46,22,42,.9);display:flex;align-items:center;justify-content:center;padding:76px 16px 24px;opacity:0;transition:opacity .25s var(--ease-out)}
+  .lightbox.open{opacity:1}
+  .lightbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;transform:scale(.96);transition:transform .3s var(--ease-out)}
+  .lightbox.open img{transform:scale(1)}
+  .lightbox-close{position:absolute;top:16px;right:16px;width:48px;height:48px;border-radius:50%;border:0;background:var(--card);color:var(--ink);cursor:pointer;display:grid;place-items:center;box-shadow:var(--clay)}
+  .lightbox-close svg{width:22px;height:22px;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;fill:none}
+  .polaroid .tape{position:absolute;top:-14px;left:50%;width:110px;height:32px;transform:translateX(-50%) rotate(-3deg);background:rgba(220,211,255,.75);border-radius:3px;box-shadow:0 2px 4px rgba(0,0,0,.06)}
+  .photo{aspect-ratio:4/5;width:100%;border-radius:2px;overflow:hidden;background:linear-gradient(135deg,var(--pink),var(--lavender));position:relative}
+  .photo img{position:absolute;width:135%;height:135%;max-width:none;left:-16.8%;top:-18.2%;object-fit:cover;object-position:50% 62%;display:block}
+  .photo .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:var(--ink);font-weight:700}
+  .photo .ph svg{width:56px;height:56px;fill:#fff;margin:0 auto 8px;display:block}
+  .polaroid figcaption{position:absolute;left:0;right:0;bottom:14px;font-family:"Caveat";font-size:1.75rem;font-weight:700;color:var(--ink)}
+  .hint{font-size:.9rem;color:var(--ink-soft);margin-top:18px}
+
+  /* Contador */
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .tile{padding:16px 6px 14px;border-radius:var(--radius-md);box-shadow:var(--clay);border:3px solid rgba(255,255,255,.7)}
+  .tile:nth-child(1){background:var(--pink)}
+  .tile:nth-child(2){background:var(--peach)}
+  .tile:nth-child(3){background:var(--butter)}
+  .tile:nth-child(4){background:var(--mint)}
+  .tile:nth-child(5){background:var(--sky)}
+  .tile:nth-child(6){background:var(--lavender)}
+  .tile b{display:block;font:700 clamp(1.7rem,7vw,2.3rem)/1 "Fredoka",sans-serif;font-variant-numeric:tabular-nums}
+  .tile small{display:block;margin-top:6px;font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+  .stats{margin-top:20px;padding:20px;display:grid;gap:10px;text-align:left}
+  .stats p{margin:0;display:flex;gap:10px;align-items:flex-start}
+  .stats svg{flex:none;width:20px;height:20px;fill:#E86AA6;margin-top:3px}
+
+  /* Carta */
+  .envelope-btn{background:none;border:0;padding:0;cursor:pointer;display:block;margin:0 auto;border-radius:20px}
+  .envelope{position:relative;width:min(320px,84vw);aspect-ratio:3/2;margin:110px auto 0}
+  .env-back,.env-front{position:absolute;inset:0;border-radius:18px}
+  .env-back{background:#F3B6D2;box-shadow:var(--clay)}
+  .env-front{background:linear-gradient(160deg,var(--pink) 0%,#F7BBD7 100%);clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%);z-index:3}
+  .env-flap{position:absolute;left:0;right:0;top:0;height:60%;background:#F5A9CC;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s var(--ease-out) ;z-index:4;border-radius:18px 18px 0 0}
+  .env-seal{position:absolute;left:50%;top:48%;width:48px;height:48px;transform:translate(-50%,-50%);border-radius:50%;background:#E86AA6;display:grid;place-items:center;z-index:5;box-shadow:inset 2px 2px 4px rgba(255,255,255,.5),0 4px 10px rgba(180,60,120,.3);transition:opacity .3s}
+  .env-seal svg{width:24px;height:24px;fill:#fff}
+  .env-paper{position:absolute;left:8%;right:8%;top:10%;bottom:8%;background:#FFFDF8;border-radius:10px;z-index:2;transition:transform .7s .3s var(--spring)}
+  .envelope-btn[aria-expanded="true"] .env-flap{transform:rotateX(180deg);z-index:1}
+  .envelope-btn[aria-expanded="true"] .env-seal{opacity:0}
+  .envelope-btn[aria-expanded="true"] .env-paper{transform:translateY(-26%)}
+  .letter{margin:24px auto 0;padding:28px 24px;text-align:left;background:#FFFDF8;font-family:"Caveat";font-size:1.55rem;line-height:1.35}
+  .letter[hidden]{display:none}
+  .letter p{margin:0 0 .8em}
+  .letter .sign{text-align:right;margin:0}
+
+  footer{text-align:center;margin-top:56px;color:var(--ink-soft);font-size:.95rem}
+  footer svg{width:16px;height:16px;fill:#E86AA6;vertical-align:-2px}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+  @media (min-width:640px){
+    .tiles{grid-template-columns:repeat(6,1fr)}
+    .tile b{font-size:1.9rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    html{scroll-behavior:auto}
+    .float-hearts,.petal{display:none}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M13.2 5.3a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 1 1-1.4-1.4l4.3-4.3H4a1 1 0 1 1 0-2h13.5l-4.3-4.3a1 1 0 0 1 0-1.4z"/></symbol>
+</svg>
+
+
+<!-- 1. INTRO -->
+<section class="screen" id="intro">
+  <div class="wrap">
+    <div class="clay intro fade-in">
+      <div class="badge-heart" aria-hidden="true"><svg><use href="#heart"/></svg></div>
+      <span class="hand" id="introSaludo">Hola, mi amor</span>
+      <h1>Tengo algo especial para ti</h1>
+      <p>Pero antes tienes que demostrar que eres tú. Responde un pequeño reto y desbloquea tu sorpresa.</p>
+      <button class="btn" id="startBtn">Aceptar el reto <svg aria-hidden="true"><use href="#arrow"/></svg></button>
+    </div>
+  </div>
+</section>
+
+<!-- 2. QUIZ -->
+<section class="screen" id="quiz" hidden>
+  <div class="wrap">
+    <div class="clay quiz fade-in">
+      <div class="quiz-top">
+        <span id="qCount">Pregunta 1 de 5</span>
+        <span class="lives" aria-hidden="true">
+          <svg><use href="#heart"/></svg><svg><use href="#heart"/></svg><svg><use href="#heart"/></svg>
+        </span>
+      </div>
+      <div class="progress" role="progressbar" aria-label="Progreso del reto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="qBar"></span></div>
+      <h2 class="question" id="qText"></h2>
+      <div class="options" id="qOptions"></div>
+      <p class="feedback" id="qFeedback" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. DESBLOQUEADO -->
+<section class="screen" id="unlocked" hidden>
+  <div class="wrap">
+    <div class="clay unlock fade-in">
+      <div class="badge-heart" aria-hidden="true"><svg><use href="#heart"/></svg></div>
+      <h2>Reto superado</h2>
+      <p class="hand" style="font-size:1.7rem;margin:0 0 24px">Sabía que eras tú</p>
+      <button class="btn" id="openGift">Abrir mi regalo</button>
+    </div>
+  </div>
+</section>
+
+<!-- 4. REGALO -->
+<main id="gift" hidden>
+  <div class="wrap">
+
+    <!-- Ramo -->
+    <section class="section fade-in" aria-labelledby="t-ramo">
+      <span class="eyebrow">Felices 3 meses</span>
+      <h2 id="t-ramo">Un ramo que nunca se marchita</h2>
+      <p class="sub" id="ramoSub">Toca el ramo para hacerlo florecer.</p>
+      <div class="clay bouquet-card">
+        <svg class="bouquet" id="bouquet" viewBox="0 0 400 480" role="group" aria-label="Ramo de flores interactivo"></svg>
+        <button class="btn" id="bloomBtn">Hacer florecer</button>
+        <div id="noteWrap" hidden>
+          <div class="note" id="note" aria-live="polite">Toca cada flor: cada una guarda un secreto</div>
+          <span class="counter-pill" id="seenCount"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Polaroid -->
+    <section class="section" aria-labelledby="t-foto">
+      <span class="eyebrow" style="background:var(--peach)">Nosotros</span>
+      <h2 id="t-foto">Mi foto favorita</h2>
+      <button class="polaroid-btn" id="polaroidBtn" aria-haspopup="dialog" aria-label="Foto de nosotros, toca para verla en pantalla completa">
+        <figure class="polaroid" style="margin:0">
+          <span class="tape" aria-hidden="true"></span>
+          <div class="photo">
+            <img id="photo" alt="Nosotros dos juntos" loading="lazy">
+            <div class="ph" id="photoPh" hidden>
+              <div><svg aria-hidden="true"><use href="#heart"/></svg>Guarda tu foto como <br><code>foto.jpg</code> junto a este archivo</div>
+            </div>
+          </div>
+          <figcaption id="caption"></figcaption>
+        </figure>
+      </button>
+      <p class="hint">Toca la foto para verla en grande</p>
+    </section>
+
+    <!-- Contador -->
+    <section class="section" aria-labelledby="t-tiempo">
+      <span class="eyebrow" style="background:var(--mint)">Nuestro tiempo</span>
+      <h2 id="t-tiempo">Llevamos juntos</h2>
+      <p class="sub" id="sinceText"></p>
+      <div class="tiles" role="timer" aria-live="off">
+        <div class="tile"><b id="cMonths">0</b><small>Meses</small></div>
+        <div class="tile"><b id="cDays">0</b><small>Días</small></div>
+        <div class="tile"><b id="cHours">0</b><small>Horas</small></div>
+        <div class="tile"><b id="cMins">0</b><small>Minutos</small></div>
+        <div class="tile"><b id="cSecs">0</b><small>Segundos</small></div>
+        <div class="tile"><b id="cTotal">0</b><small>Días total</small></div>
+      </div>
+      <div class="clay stats">
+        <p><svg aria-hidden="true"><use href="#heart"/></svg><span>Unos <strong id="sBeats">0</strong> latidos de mi corazón desde que eres mía.</span></p>
+        <p><svg aria-hidden="true"><use href="#heart"/></svg><span>Faltan <strong id="sNext">0</strong> días para nuestro próximo mes juntos.</span></p>
+      </div>
+    </section>
+
+    <!-- Carta -->
+    <section class="section" aria-labelledby="t-carta">
+      <span class="eyebrow" style="background:var(--butter)">Una última cosa</span>
+      <h2 id="t-carta">Te escribí una carta</h2>
+      <button class="envelope-btn" id="envBtn" aria-expanded="false" aria-controls="letter" aria-label="Abrir la carta">
+        <div class="envelope">
+          <div class="env-back"></div>
+          <div class="env-paper"></div>
+          <div class="env-front"></div>
+          <div class="env-flap"></div>
+          <div class="env-seal"><svg aria-hidden="true"><use href="#heart"/></svg></div>
+        </div>
+      </button>
+      <div class="clay letter" id="letter" hidden></div>
+    </section>
+
+    <footer><span id="footerText"></span> <svg aria-hidden="true"><use href="#heart"/></svg></footer>
+  </div>
+</main>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto en pantalla completa" hidden>
+  <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar foto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <img id="lightboxImg" alt="Nosotros dos juntos">
+</div>
+
+<script>
+/* =========================================================
+   PERSONALIZA AQUÍ TODO EL CONTENIDO
+   ========================================================= */
+const CONFIG = {
+  nombreElla: "mi amor",
+  firma: "Sebas.",
+  // Fecha en que empezaron (AAAA-MM-DDTHH:MM:SS)
+  inicio: "2026-07-04T00:00:00",
+  foto: "foto.jpg",                  // pon la foto en la misma carpeta
+  pieFoto: "Tú y yo, para siempre",
+
+  // Preguntas del reto. "correcta" = índice de la opción correcta (empieza en 0).
+  // Si hay varias válidas, usa una lista: correcta: [0, 1]
+  preguntas: [
+    { pregunta: "¿Dónde fue nuestra primera cita?",
+      opciones: ["En un concierto", "Salimos a un café", "En el cine", "En un parque"], correcta: [0, 1] },
+    { pregunta: "¿Quién escribió primero?",
+      opciones: ["Tú", "Yo", "Fue al mismo tiempo", "Un amigo en común"], correcta: 1 },
+    { pregunta: "¿Cuál es mi comida favorita?",
+      opciones: ["Pizza", "Sushi", "Hamburguesa", "Pastas"], correcta: 3 },
+    { pregunta: "¿Qué fecha cumplimos meses?",
+      opciones: ["Los 4", "Los 14", "Los 24", "Los 1"], correcta: 0 },
+    { pregunta: "¿Quién ama más a quién?",
+      opciones: ["Yo a ti", "Tú a mí", "Los dos por igual", "Pregunta trampa: yo, siempre"], correcta: 3 }
+  ],
+
+  // Mensajes de cada flor del ramo (7 flores)
+  secretos: [
+    "Me encanta cómo te ríes de mis chistes malos",
+    "Contigo hasta los días normales se sienten especiales",
+    "Tu voz es mi lugar favorito",
+    "Eres lo primero que pienso al despertar",
+    "Gracias por elegirme cada día",
+    "Me haces querer ser mejor persona",
+    "Este es el principio de toda una vida a tu lado"
+  ],
+
+  carta: [
+    "Mi amor:",
+    "Hoy cumplimos 3 meses y todavía no me creo la suerte que tengo de tenerte. Gracias por siempre ser tan hermosa y especial conmigo, me haces sentir muy amado.",
+    "Quiero seguir sumando más segundos a tu lado, crecer juntos, aprendiendo de ti y haciéndote igual de feliz de lo que tú me haces a mí.",
+    "Te amo, hoy y siempre."
+  ],
+
+  aciertos: ["¡Esa es mi novia!", "¡Correcto!", "Lo sabía", "¡Exacto, mi amor!", "Perfecta"],
+  fallos: ["Mmm... ¿segura?", "Inténtalo otra vez", "Casi, piénsalo bien", "Ay, eso me dolió un poquito"]
+};
+/* ========================================================= */
+
+const $ = s => document.querySelector(s);
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const pick = a => a[Math.floor(Math.random() * a.length)];
+
+function show(id){
+  document.querySelectorAll(".screen, #gift").forEach(el => el.hidden = el.id !== id);
+  window.scrollTo(0,0);
+  const h = $("#" + id).querySelector("h1, h2");
+  if (h){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); }
+}
+
+/* ---------- Intro ---------- */
+$("#introSaludo").textContent = "Hola, " + CONFIG.nombreElla;
+$("#startBtn").addEventListener("click", () => { qi = 0; show("quiz"); renderQ(); });
+
+/* ---------- Quiz ---------- */
+let qi = 0, locked = false;
+function renderQ(){
+  const q = CONFIG.preguntas[qi], total = CONFIG.preguntas.length;
+  $("#qCount").textContent = `Pregunta ${qi+1} de ${total}`;
+  const pct = Math.round(qi/total*100);
+  $("#qBar").style.width = pct + "%";
+  $("#qBar").parentElement.setAttribute("aria-valuenow", pct);
+  $("#qText").textContent = q.pregunta;
+  $("#qFeedback").textContent = "";
+  const box = $("#qOptions"); box.innerHTML = "";
+  q.opciones.forEach((txt, i) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.innerHTML = `<span class="opt-key" aria-hidden="true">${"ABCD"[i]}</span><span></span>`;
+    b.lastChild.textContent = txt;
+    b.addEventListener("click", () => answer(b, i));
+    box.appendChild(b);
+  });
+  locked = false;
+}
+function answer(btn, i){
+  if (locked) return;
+  const q = CONFIG.preguntas[qi];
+  if ([].concat(q.correcta).includes(i)){
+    locked = true;
+    btn.classList.add("correct");
+    $("#qFeedback").textContent = pick(CONFIG.aciertos);
+    setTimeout(() => {
+      qi++;
+      if (qi < CONFIG.preguntas.length) renderQ();
+      else { $("#qBar").style.width = "100%"; setTimeout(() => { show("unlocked"); confetti(20); }, 400); }
+    }, 1000);
+  } else {
+    btn.classList.remove("wrong"); void btn.offsetWidth; btn.classList.add("wrong");
+    $("#qFeedback").textContent = pick(CONFIG.fallos);
+    setTimeout(() => btn.classList.remove("wrong"), 900);
+  }
+}
+
+/* ---------- Efectos ---------- */
+const petalColors = ["#F49CC4","#C9A7FF","#FFB88C","#FFE38A","#9FD8B5","#A5D0FF"];
+function confetti(n){
+  if (reduceMotion) return;
+  for (let k=0;k<n;k++){
+    const s = document.createElementNS("http://www.w3.org/2000/svg","svg");
+    s.setAttribute("viewBox","0 0 24 24"); s.classList.add("petal");
+    s.innerHTML = '<use href="#heart"/>';
+    s.style.fill = pick(petalColors);
+    s.style.left = Math.random()*100 + "vw";
+    s.style.setProperty("--dx", (Math.random()*160-80) + "px");
+    s.style.setProperty("--r", (Math.random()*720-360) + "deg");
+    s.style.animationDuration = (2.6 + Math.random()*2.4) + "s";
+    s.style.animationDelay = (Math.random()*0.8) + "s";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 6500);
+  }
+}
+
+/* ---------- Regalo ---------- */
+$("#openGift").addEventListener("click", () => { show("gift"); buildBouquet(); startCounter(); });
+
+/* Ramo SVG */
+const NS = "http://www.w3.org/2000/svg";
+const FLOWERS = [
+  {x:200,y:118,s:34,p:8, c:"#F7A8CB",d:"#E77FAE"},
+  {x:132,y:160,s:30,p:6, c:"#CDBBFF",d:"#A78BFA"},
+  {x:268,y:160,s:30,p:6, c:"#FFC59E",d:"#F59E6B"},
+  {x:84, y:228,s:26,p:5, c:"#FFE38A",d:"#F2C94C"},
+  {x:316,y:228,s:26,p:5, c:"#A9D8FF",d:"#6FB5F2"},
+  {x:160,y:236,s:28,p:7, c:"#FFB3C1",d:"#F07F98"},
+  {x:240,y:236,s:28,p:7, c:"#BDEBCF",d:"#7FCB9F"}
+];
+let bouquetOpen = false;
+const seen = new Set();
+
+function el(tag, attrs, parent){
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function buildBouquet(){
+  const svg = $("#bouquet");
+  if (svg.childElementCount) return;
+  const defs = el("defs", {}, svg);
+  defs.innerHTML = `
+    <linearGradient id="wrapA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9E2FF"/><stop offset="1" stop-color="#CBBEF7"/></linearGradient>
+    <linearGradient id="wrapB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD6E7"/><stop offset="1" stop-color="#F6A9CB"/></linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#B4789F" flood-opacity=".3"/></filter>`;
+  const sway = el("g", {class:"sway"}, svg);
+
+  // Tallos
+  FLOWERS.forEach(f => {
+    el("path", {d:`M200 420 Q ${(200+f.x)/2} ${(420+f.y)/2+40} ${f.x} ${f.y+f.s*.6}`, stroke:"#8CCB9E", "stroke-width":6, fill:"none", "stroke-linecap":"round"}, sway);
+  });
+  // Hojas
+  [[120,290,-35],[280,290,35],[150,320,-20],[255,318,25]].forEach(([x,y,r]) =>
+    el("ellipse", {cx:x, cy:y, rx:30, ry:12, fill:"#A6DDB6", stroke:"#7FC395", "stroke-width":2, transform:`rotate(${r} ${x} ${y})`, filter:"url(#soft)"}, sway));
+
+  // Papel
+  el("path", {d:"M78 268 Q200 300 322 268 L226 468 Q200 476 174 468 Z", fill:"url(#wrapA)", stroke:"#fff", "stroke-width":3, filter:"url(#soft)"}, sway);
+  el("path", {d:"M112 300 Q200 330 288 300 L214 468 Q200 474 186 468 Z", fill:"url(#wrapB)", stroke:"#fff", "stroke-width":3, filter:"url(#soft)"}, sway);
+  // Moño
+  el("path", {d:"M200 392 C170 360 140 378 160 402 C172 416 192 404 200 392 Z", fill:"#E77FAE", stroke:"#fff","stroke-width":2.5}, sway);
+  el("path", {d:"M200 392 C230 360 260 378 240 402 C228 416 208 404 200 392 Z", fill:"#E77FAE", stroke:"#fff","stroke-width":2.5}, sway);
+  el("path", {d:"M196 398 L180 446 M204 398 L222 444", stroke:"#E77FAE","stroke-width":7,"stroke-linecap":"round"}, sway);
+  el("circle", {cx:200, cy:394, r:10, fill:"#F49CC4", stroke:"#fff", "stroke-width":2.5}, sway);
+
+  // Flores
+  FLOWERS.forEach((f, i) => {
+    const g = el("g", {class:"flower", transform:`translate(${f.x} ${f.y})`, tabindex:"-1", role:"button", "aria-label":`Flor ${i+1}, toca para leer su secreto`}, sway);
+    el("circle", {class:"ring", r:f.s*1.75}, g);
+    const b = el("g", {class:"bloom", filter:"url(#soft)"}, g);
+    b.style.transitionDelay = (i*0.12) + "s";
+    for (let k=0;k<f.p;k++){
+      el("ellipse", {cx:0, cy:-f.s*.75, rx:f.s*.48, ry:f.s*.85, fill:f.c, stroke:f.d, "stroke-width":2, transform:`rotate(${k*360/f.p})`}, b);
+    }
+    el("circle", {class:"center", r:f.s*.38, fill:"#FFE9A6", stroke:"#F2C94C", "stroke-width":2}, b);
+
+    const act = () => { if (bouquetOpen) reveal(i, g); else bloom(); };
+    g.addEventListener("click", e => { e.stopPropagation(); act(); });
+    g.addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" "){ e.preventDefault(); act(); }});
+  });
+  svg.addEventListener("click", () => { if (!bouquetOpen) bloom(); });
+}
+function bloom(){
+  if (bouquetOpen) return;
+  bouquetOpen = true;
+  $("#bouquet").classList.add("open");
+  $("#bloomBtn").hidden = true;
+  $("#noteWrap").hidden = false;
+  $("#ramoSub").textContent = "Cada flor guarda algo que te quiero decir.";
+  document.querySelectorAll(".flower").forEach(f => f.setAttribute("tabindex","0"));
+  updateSeen();
+
+}
+function reveal(i, g){
+  seen.add(i); g.classList.add("seen");
+  const n = $("#note");
+  n.textContent = CONFIG.secretos[i] || "Te quiero";
+  n.classList.remove("pop"); void n.offsetWidth; n.classList.add("pop");
+  updateSeen();
+}
+function updateSeen(){
+  $("#seenCount").textContent = seen.size === FLOWERS.length
+    ? "Encontraste todos los secretos"
+    : `${seen.size} de ${FLOWERS.length} secretos descubiertos`;
+}
+$("#bloomBtn").addEventListener("click", bloom);
+
+/* Polaroid */
+const img = $("#photo");
+img.addEventListener("error", () => { img.hidden = true; $("#photoPh").hidden = false; });
+img.src = CONFIG.foto;
+$("#caption").textContent = CONFIG.pieFoto;
+const lightbox = $("#lightbox");
+function openLightbox(){
+  if (img.hidden) return;
+  $("#lightboxImg").src = img.src;
+  lightbox.hidden = false;
+  document.body.style.overflow = "hidden";
+  requestAnimationFrame(() => lightbox.classList.add("open"));
+  $("#lightboxClose").focus();
+}
+function closeLightbox(){
+  lightbox.classList.remove("open");
+  document.body.style.overflow = "";
+  setTimeout(() => { lightbox.hidden = true; }, reduceMotion ? 0 : 250);
+  $("#polaroidBtn").focus({preventScroll:true});
+}
+$("#polaroidBtn").addEventListener("click", openLightbox);
+$("#lightboxClose").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !lightbox.hidden) closeLightbox(); });
+
+/* Contador */
+const start = new Date(CONFIG.inicio);
+const addMonths = (d, n) => { const r = new Date(d); r.setMonth(r.getMonth()+n); return r; };
+const fmt = n => n.toLocaleString("es");
+$("#sinceText").textContent = "Desde el " + start.toLocaleDateString("es", {day:"numeric", month:"long", year:"numeric"});
+let timer;
+function tick(){
+  const now = new Date();
+  let m = (now.getFullYear()-start.getFullYear())*12 + now.getMonth()-start.getMonth();
+  let anchor = addMonths(start, m);
+  if (anchor > now){ m--; anchor = addMonths(start, m); }
+  m = Math.max(0, m);
+  let rest = Math.max(0, now - anchor);
+  const d = Math.floor(rest/864e5); rest -= d*864e5;
+  const h = Math.floor(rest/36e5);  rest -= h*36e5;
+  const mi = Math.floor(rest/6e4);  rest -= mi*6e4;
+  const s = Math.floor(rest/1e3);
+  $("#cMonths").textContent = m;
+  $("#cDays").textContent = d;
+  $("#cHours").textContent = String(h).padStart(2,"0");
+  $("#cMins").textContent = String(mi).padStart(2,"0");
+  $("#cSecs").textContent = String(s).padStart(2,"0");
+  const totalMs = Math.max(0, now - start);
+  $("#cTotal").textContent = fmt(Math.floor(totalMs/864e5));
+  $("#sBeats").textContent = fmt(Math.floor(totalMs/6e4*75));
+  const next = addMonths(start, m+1);
+  $("#sNext").textContent = Math.ceil((next - now)/864e5);
+}
+function startCounter(){ if (!timer){ tick(); timer = setInterval(tick, 1000); } }
+
+/* Carta */
+const letter = $("#letter");
+CONFIG.carta.forEach(t => { const p = document.createElement("p"); p.textContent = t; letter.appendChild(p); });
+const sign = document.createElement("p"); sign.className = "sign"; sign.textContent = CONFIG.firma; letter.appendChild(sign);
+$("#envBtn").addEventListener("click", function(){
+  const open = this.getAttribute("aria-expanded") !== "true";
+  this.setAttribute("aria-expanded", open);
+  this.setAttribute("aria-label", open ? "Cerrar la carta" : "Abrir la carta");
+  if (open){
+    setTimeout(() => { letter.hidden = false; letter.classList.add("fade-in"); letter.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"center"}); }, 700);
+  } else letter.hidden = true;
+});
+$("#footerText").textContent = "Hecho con amor para " + CONFIG.nombreElla;
+</script>
+</body>
+</html>
